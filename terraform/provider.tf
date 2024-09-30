@@ -5,10 +5,10 @@ provider "aws" {
 
 terraform {
   backend "s3" {
-    bucket         = "motohashi-tfstate-aws-0001"
-    key            = "terraform/tfstate"
-    region         = "ap-northeast-1"
-    encrypt        = true
+    bucket  = "apc-tfstate-aws-0001"
+    key     = "terraform/tfstate"
+    region  = "ap-northeast-1"
+    encrypt = true
     # dynamodb_table = "your-lock-table"
   }
 }
