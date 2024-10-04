@@ -32,7 +32,6 @@ resource "aws_internet_gateway" "this" {
 }
 
 resource "aws_subnet" "subnets" {
-  # exclude the VPC CIDR block because it is not a subnet CIDR block.
   for_each = local.subnets
 
   vpc_id     = aws_vpc.this.id
