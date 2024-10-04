@@ -18,7 +18,54 @@ resource "aws_key_pair" "this" {
 }
 
 ############################################################
-### Security Groups
+### Virtual Private Cloud
+############################################################
+resource "aws_vpc" "this" {
+  cidr_block = var.cidr_block.base
+
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+}
+
+resource "aws_internet_gateway" "this" {
+  vpc_id = aws_vpc.this.id
+}
+
+resource "aws_subnet" "subnets" {
+  # exclude the VPC CIDR block because it is not a subnet CIDR block.
+  for_each = local.subnets
+
+  vpc_id     = aws_vpc.this.id
+  cidr_block = each.value
+}
+
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.this.id
+}
+
+resource "aws_route" "public" {
+  route_table_id         = aws_route_table.public.id
+  gateway_id             = aws_internet_gateway.this.id
+  destination_cidr_block = "0.0.0.0/0"
+}
+
+resource "aws_route_table_association" "public" {
+  for_each = var.cidr_block.subnet.public
+
+  subnet_id      = aws_subnet.subnets[each.key].id
+  route_table_id = aws_route_table.public.id
+}
+
+# all private subnets associate with the main route table in the VPC.
+resource "aws_route_table_association" "private" {
+  for_each = var.cidr_block.subnet.private
+
+  subnet_id      = aws_subnet.subnets[each.key].id
+  route_table_id = aws_vpc.this.main_route_table_id
+}
+
+############################################################
+### Security Group
 ############################################################
 resource "aws_security_group" "sg_ec2" {
   name        = "my-sg-${random_string.this.result}"
@@ -42,7 +89,6 @@ resource "aws_security_group" "sg_ec2" {
 ############################################################
 ### EC2
 ############################################################
-# Use the data source to get the latest Amazon Linux 2 AMI
 data "aws_ami" "ami" {
   most_recent = true
 
