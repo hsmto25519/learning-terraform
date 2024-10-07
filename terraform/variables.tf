@@ -8,3 +8,14 @@ variable "instance_type" {
   description = "The type of EC2 instance to launch"
   type        = string
 }
+
+variable "cidr_block" {
+  description = "The CIDR blocks for my VPC"
+  type = object({
+    base = string
+    subnet = object({
+      public  = map(string)
+      private = map(string)
+    })
+  })
+}
