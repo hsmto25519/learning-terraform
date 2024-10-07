@@ -11,7 +11,7 @@
 
 ### 自分用のstatefileを用意する場合
 
-provider.tf内のkey attributeを書き換える。
+terraform.tf内のkey attributeを書き換える。
 ```
 terraform {
   backend "s3" {
