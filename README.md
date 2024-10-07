@@ -61,7 +61,7 @@ terraform apply
 # Check output values
 terraform output -json
 
-# Connect to the ec2 we created. (but we cant connect to it because we need an internet gateway too.)
+# Connect to the ec2 we created.
 vi private-key.pem
 chmod 400 private-key.pem
 publicip=<output ip>
