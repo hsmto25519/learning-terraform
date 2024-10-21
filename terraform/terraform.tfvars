@@ -34,6 +34,7 @@ sg = {
     ]
   }
 }
+
 igw_name = "my-igw"
 rt_name  = "my-rt"
 

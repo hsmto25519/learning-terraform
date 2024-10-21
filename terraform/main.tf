@@ -94,6 +94,19 @@ resource "aws_lb" "this" {
   tags               = merge({ Name = var.alb_name }, var.tags)
 }
 
+resource "aws_lb_listener" "ec2" {
+  load_balancer_arn = aws_lb.this.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.ec2.arn
+  }
+
+  tags = merge({ Name = var.alb_listener_name }, var.tags)
+}
+
 resource "aws_lb_target_group" "ec2" {
   name     = var.alb_tg_name
   port     = 80
@@ -108,17 +121,10 @@ resource "aws_lb_target_group" "ec2" {
   tags = merge({ Name = var.alb_tg_name }, var.tags)
 }
 
-resource "aws_lb_listener" "ec2" {
-  load_balancer_arn = aws_lb.this.arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.ec2.arn
-  }
-
-  tags = merge({ Name = var.alb_listener_name }, var.tags)
+resource "aws_lb_target_group_attachment" "ec2" {
+  target_group_arn = aws_lb_target_group.ec2.arn
+  target_id        = aws_instance.this.id
+  port             = 80
 }
 
 ############################################################
