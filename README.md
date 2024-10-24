@@ -66,4 +66,14 @@ vi private-key.pem
 chmod 400 private-key.pem
 publicip=<output ip>
 ssh -i private-key.pem ec2-user@$publicip
+
+# deploy an apps
+sudo yum update -y
+sudo yum install httpd -y
+sudo systemctl start httpd
+sudo systemctl status httpd
+
+# create an html file that literally displays "hello".
+sudo sh -c "echo 'hello' > /var/www/html/index.html"
+# (to create the file and the ec2 target in the ALB will be 'Healthy')
 ```
