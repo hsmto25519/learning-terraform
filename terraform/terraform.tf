@@ -1,10 +1,10 @@
 terraform {
   backend "s3" {
-    bucket         = "apc-tfstate-aws-0001"
+    bucket         = "<your_s3_bucket>"
     key            = "terraform/tfstate"
     region         = "ap-northeast-1"
     encrypt        = true
-    dynamodb_table = "terraform-lock-table-01"
+    dynamodb_table = "<your_dynamodb_table>"
   }
 
   required_providers {

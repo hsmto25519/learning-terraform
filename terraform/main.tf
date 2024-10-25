@@ -1,4 +1,4 @@
-# for education purposes
+# this string is unnecessary in general
 resource "random_string" "this" {
   length  = 8
   special = false

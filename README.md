@@ -2,24 +2,24 @@
 
 ## 前提
 
-* 対象のS3がデプロイされていること
-  * apc-tfstate-aws-0001
-* 対象のDynamoDBがデプロイされていること
-  * terraform-lock-table-01
+* Terraformのstatefileを格納するS3がデプロイされていること
+  * <your_s3_bucket>
+* 排他制御を有効にするためのDynamoDBがデプロイされていること
+  * <your_dynamodb_table>
 
 ## 使い方
 
-### 自分用のstatefileを用意する場合
+### デプロイの準備
 
 terraform.tf内のkey attributeを書き換える。
 ```
 terraform {
   backend "s3" {
-    bucket         = "apc-tfstate-aws-0001"
-    key            = "terraform/tfstate"  <- これを任意の名前に書き換える
+    bucket         = "<your_s3_bucket>"  <- これをS3の名前に書き換える
+    key            = "terraform/tfstate"
     region         = "ap-northeast-1"
     encrypt        = true
-    dynamodb_table = "terraform-lock-table-01"
+    dynamodb_table = "<your_dynamodb_table>"  <- これをDynamoDBの名前に書き換える
   }
 }
 ```
@@ -40,6 +40,8 @@ terraform destroy
 ```
 
 ### CloudShellでの実行方法
+
+terraformでAWSリソースを作成後、EC2上にアプリをデプロイする。
 
 ```
 ### open cloudshell to execute commands

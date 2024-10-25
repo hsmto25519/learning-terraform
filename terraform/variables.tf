@@ -1,4 +1,9 @@
 ### Shared
+variable "region" {
+  description = "The AWS region to deploy resources"
+  type        = string
+}
+
 variable "tags" {
   description = "The tags to apply to all resources"
   type        = map(string)
