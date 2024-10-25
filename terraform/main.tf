@@ -85,46 +85,17 @@ module "sgs" {
 ############################################################
 ### ALB
 ############################################################
-resource "aws_lb" "this" {
-  name               = var.alb_name
-  internal           = false
-  load_balancer_type = "application"
-  security_groups    = [module.sgs["my-alb-sg"].id]
-  subnets            = local.lb_subnet_ids
-  tags               = merge({ Name = var.alb_name }, var.tags)
-}
+module "alb" {
+  source = "./modules/application_loadbalancer"
 
-resource "aws_lb_listener" "ec2" {
-  load_balancer_arn = aws_lb.this.arn
-  port              = "80"
-  protocol          = "HTTP"
-
-  default_action {
-    type             = "forward"
-    target_group_arn = aws_lb_target_group.ec2.arn
-  }
-
-  tags = merge({ Name = var.alb_listener_name }, var.tags)
-}
-
-resource "aws_lb_target_group" "ec2" {
-  name     = var.alb_tg_name
-  port     = 80
-  protocol = "HTTP"
-  vpc_id   = aws_vpc.this.id
-
-  stickiness {
-    type            = "lb_cookie"
-    cookie_duration = 86400
-  }
-
-  tags = merge({ Name = var.alb_tg_name }, var.tags)
-}
-
-resource "aws_lb_target_group_attachment" "ec2" {
-  target_group_arn = aws_lb_target_group.ec2.arn
-  target_id        = aws_instance.this.id
-  port             = 80
+  name           = var.alb_name
+  tg_name        = var.alb_tg_name
+  listener_name  = var.alb_listener_name
+  target_id      = aws_instance.this.id
+  vpc_id         = aws_vpc.this.id
+  subnet_ids     = local.lb_subnet_ids
+  security_group = module.sgs["my-alb-sg"].id
+  tags           = var.tags
 }
 
 ############################################################
