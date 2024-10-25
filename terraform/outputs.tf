@@ -8,5 +8,5 @@ output "private_key_content" {
 }
 
 output "alb_fqdn" {
-  value = aws_lb.this.dns_name
+  value = module.alb.alb_fqdn
 }
